@@ -1,36 +1,60 @@
 //指定したid値を持つ要素をElementとして返す
 const button = document.getElementById("addBtn");
-const lists = document.getElementById("lists");
+
 
 document.addEventListener('DOMContentLoaded',()=>{
 button.addEventListener("click",async function(){
+  const lists = document.getElementById("lists");
  //liタグ削除
        let litags = document.getElementsByTagName('li');
+       let imgs = document.getElementsByTagName('img');
     for(let li of litags){
-        lists.removeChild(li);
+       lists.removeChild(li);
+    }
+    for(let img of imgs){
+      lists.removeChild(img);
     }
 
    //id 属性を利用して入力内容を返す 
     const searchWord = document.getElementById('searchWord').value;
+    
+    const applicationId  = '1000474099632671904';
+  const affiliateId    = '258b0227.6e1470c9.258b0228.c6450a4a';
+  const encodedKeyword = encodeURIComponent(searchWord);
 
    // Google Books APIs のエンドポイント
-   const url = `https://www.googleapis.com/books/v1/volumes?q=${searchWord}`;
-     //responseオブジェクトが帰ってくる
+   //const url = `https://www.googleapis.com/books/v1/volumes?q=${searchWord}`;
+  // 楽天　api
+//     const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json&keyword=${encodedKeyword}&applicationId=${applicationId}&affiliateId=${affiliateId}`;
+   const url = `https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404?format=json&keyword=${encodedKeyword}&applicationId=${applicationId}`;
+
+   //responseオブジェクトが帰ってくる
    const res = await fetch(url);
-    //const res = await fetch("https://jsonplaceholder.typicode.com/users");
+
     //jsonデータが帰ってくる？
    const bookData =  await res.json();   
-    // let today = bookData.items[0].volumeInfo.title;
-    // let telop = bookData.items[0].id;
-    // document.getElementById('today').textContent = today;
-    // document.getElementById('telop').textContent = telop;
+    
+ let today = bookData.Items[0].Item.author;
+    let telop = bookData.Items[0].Item.itemName;
+    document.getElementById('today').textContent = today;
+    document.getElementById('telop').textContent = telop;
  //DOM操作
-for (let index = 0; index < Math.min(bookData.items.length,10); index++) {
-    const item = bookData.items[index]; 
+
+ //DOM操作
+for (let index = 0; index < Math.min(bookData.Items.length,10); index++) {
+    const item = bookData.Items[index].Item; 
     const list = document.createElement("li");
-  list.innerText = item.volumeInfo.title;
+    const img = document.createElement("img");
+    //imgタグにid属性付与
+    //img.id = `id${index}`;
+    img.src = `${item.mediumImageUrl}`;
+
+
+  //list.innerText = item.volumeInfo.title;
+  list.innerText = item.title ;
     // javaScript html 要素　追加　
   lists.appendChild(list); 
+  lists.appendChild(img);
 }
 });
 });
@@ -44,8 +68,8 @@ for (let index = 0; index < Math.min(bookData.items.length,10); index++) {
 //      const res = await fetch("https://jsonplaceholder.typicode.com/users");
 //     //jsonデータが帰ってくる？
 //     const users =  await res.json();
-
-
+   
+ 
 //  users.forEach(function(user){
 //          //  createElement HTML要素を生成できる
 //   const list = document.createElement("li");
