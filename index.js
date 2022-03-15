@@ -1,20 +1,22 @@
 //指定したid値を持つ要素をElementとして返す
 const button = document.getElementById("addBtn");
 
-
+console.log("aa");
 document.addEventListener('DOMContentLoaded',()=>{
 button.addEventListener("click",async function(){
+    //olタグ取得
   const lists = document.getElementById("lists");
- //liタグ削除
-       let litags = document.getElementsByTagName('li');
-       let imgs = document.getElementsByTagName('img');
-    for(let li of litags){
-       lists.removeChild(li);
-    }
-    for(let img of imgs){
-      lists.removeChild(img);
-    }
 
+ //li,imgタグ削除 olの子要素すべて削除
+//[li]の数を取得する
+ const len = lists.children.length ;
+
+ //[li]の数だけ繰り返す
+  for ( var i = 0 ; i < len ; i ++ ) {
+       //[li]を削除する
+        lists.removeChild ( lists.children [ 0 ] ) ;
+      }
+    
    //id 属性を利用して入力内容を返す 
     const searchWord = document.getElementById('searchWord').value;
     
@@ -22,10 +24,7 @@ button.addEventListener("click",async function(){
   const affiliateId    = '258b0227.6e1470c9.258b0228.c6450a4a';
   const encodedKeyword = encodeURIComponent(searchWord);
 
-   // Google Books APIs のエンドポイント
-   //const url = `https://www.googleapis.com/books/v1/volumes?q=${searchWord}`;
-  // 楽天　api
-//     const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json&keyword=${encodedKeyword}&applicationId=${applicationId}&affiliateId=${affiliateId}`;
+   
    const url = `https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404?format=json&keyword=${encodedKeyword}&applicationId=${applicationId}`;
 
    //responseオブジェクトが帰ってくる
@@ -34,10 +33,10 @@ button.addEventListener("click",async function(){
     //jsonデータが帰ってくる？
    const bookData =  await res.json();   
     
- let today = bookData.Items[0].Item.author;
-    let telop = bookData.Items[0].Item.itemName;
-    document.getElementById('today').textContent = today;
-    document.getElementById('telop').textContent = telop;
+//  let today = bookData.Items[0].Item.author;
+//     let telop = bookData.Items[0].Item.itemName;
+//     document.getElementById('today').textContent = today;
+//     document.getElementById('telop').textContent = telop;
  //DOM操作
 
  //DOM操作
@@ -51,7 +50,9 @@ for (let index = 0; index < Math.min(bookData.Items.length,10); index++) {
 
 
   //list.innerText = item.volumeInfo.title;
-  list.innerText = item.title ;
+  list.innerText = "タイトル:"+item.title+"　著者:"+
+   item.author+"　出版社:"+item.publisherName
+   +"　isbn:"+item.isbn+"　価格:￥"+item.itemPrice+"円";
     // javaScript html 要素　追加　
   lists.appendChild(list); 
   lists.appendChild(img);
