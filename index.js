@@ -26,7 +26,7 @@ button.addEventListener("click",async function(){
 
    
    const url = `https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404?format=json&keyword=${encodedKeyword}&applicationId=${applicationId}`;
-
+   //const url = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&title=${encodedKeyword}&applicationId=${applicationId}`;
    //responseオブジェクトが帰ってくる
    const res = await fetch(url);
 
@@ -38,24 +38,41 @@ button.addEventListener("click",async function(){
 //     document.getElementById('today').textContent = today;
 //     document.getElementById('telop').textContent = telop;
  //DOM操作
-
+//count変数　CD,DVD除く用　書籍検索ではなく、総合検索のため
+ let count = 0;
  //DOM操作
-for (let index = 0; index < Math.min(bookData.Items.length,10); index++) {
+for (let index = 0; index < Math.min(bookData.Items.length,10+count); index++) {
     const item = bookData.Items[index].Item; 
     const list = document.createElement("li");
     const img = document.createElement("img");
+    const atag = document.createElement("a");
+    
+    // CD,DVD等を除く文
+    if(item.isbn === "" ){
+      count++;
+        continue;
+    }
+
+
     //imgタグにid属性付与
     //img.id = `id${index}`;
     img.src = `${item.mediumImageUrl}`;
+    //aタグにhref属性付与
+    atag.href = "menu.html";
+    
+    const content = "タイトル:"+item.title+"　著者:"+
+    item.author+"　出版社:"+item.publisherName
+    +"　isbn:"+item.isbn+"　価格:￥"+item.itemPrice+"円";
+
+    //atag.href = `/BookListProject/MenuController?detail=${content}`;
 
 
   //list.innerText = item.volumeInfo.title;
-  list.innerText = "タイトル:"+item.title+"　著者:"+
-   item.author+"　出版社:"+item.publisherName
-   +"　isbn:"+item.isbn+"　価格:￥"+item.itemPrice+"円";
+  list.innerText = content;
     // javaScript html 要素　追加　
-  lists.appendChild(list); 
-  lists.appendChild(img);
+    lists.appendChild(atag);
+  atag.appendChild(list); 
+ atag.appendChild(img);
 }
 });
 });
